@@ -1,0 +1,14 @@
+sistema-vehicular/
+├── backend/
+│   ├── api/               # Endpoints REST
+│   ├── models/            # Modelos SQLAlchemy
+│   ├── migrations/        # Scripts de migración
+│   └── tests/             # Pruebas unitarias
+├── frontend/
+│   ├── public/            # Assets estáticos
+│   ├── src/
+│   │   ├── components/    # Componentes React
+│   │   ├── hooks/         # Custom Hooks
+│   │   └── services/      # Conexión API
+├── docker-compose.yml      # Configuración Docker
+└── .github/               # CI/CD workflows

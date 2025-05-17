@@ -1,0 +1,223 @@
+1Crear un contenedor Docker para MySQL:
+
+docker run -d --name mysql-db -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mysql:latest
+
+Este comando crea un contenedor Docker con una instancia de MySQL, expone el puerto 3306 y establece la contraseña de root como "password".
+
+2 Conectarse al contenedor MySQL: Puedes conectarte al contenedor MySQL a través de una herramienta como MySQL Workbench o la línea de comandos. Por ejemplo, en la línea de comandos:
+
+docker exec -it mysql-db mysql -u root -p
+Esto te permitirá acceder a la consola de MySQL dentro del contenedor.
+
+3 Crear la base de datos y las tablas: Una vez dentro de la consola de MySQL, puedes crear la base de datos y las tablas que necesites. Por ejemplo:
+
+CREATE DATABASE sistema_vehicular;
+USE sistema_vehicular;
+CREATE TABLE vehiculos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  marca VARCHAR(50),
+  modelo VARCHAR(50),
+  anio INT,
+  color VARCHAR(20)
+);
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50),
+  email VARCHAR(50),
+  rol VARCHAR(20)
+);
+Asegúrate de replicar la estructura de la base de datos original del sistema_vehicular.
+
+
+Insertar datos de prueba: Puedes insertar algunos datos de prueba en las tablas para verificar que la replicación funciona correctamente. Por ejemplo:
+Copiar
+INSERT INTO vehiculos (marca, modelo, anio, color) VALUES
+  ('Toyota', 'Corolla', 2020, 'Blanco'),
+  ('Honda', 'Civic', 2018, 'Gris'),
+  ('Ford', 'Mustang', 2022, 'Rojo');
+
+INSERT INTO usuarios (nombre, email, rol) VALUES
+  ('Juan Pérez', 'juan@example.com', 'Administrador'),
+  ('María Gómez', 'maria@example.com', 'Usuario'),
+  ('Carlos Sánchez', 'carlos@example.com', 'Invitado');
+Conectar el backend a la base de datos MySQL en Docker: En tu aplicación backend, debes configurar la conexión a la base de datos MySQL en Docker. Generalmente, esto se hace a través de variables de entorno o un archivo de configuración.
+
+
+Crear la base de datos:
+Copiar
+CREATE DATABASE sistema_vehicular;
+USE sistema_vehicular;
+Crear las tablas:
+Copiar
+CREATE TABLE vehiculos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  marca VARCHAR(50),
+  modelo VARCHAR(50),
+  anio INT,
+  color VARCHAR(20),
+  numero_serie VARCHAR(20),
+  fecha_registro DATE
+);
+
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50),
+  apellido VARCHAR(50),
+  email VARCHAR(50),
+  telefono VARCHAR(20),
+  rol VARCHAR(20),
+  fecha_registro DATE
+);
+
+CREATE TABLE reservas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT,
+  vehiculo_id INT,
+  fecha_inicio DATE,
+  fecha_fin DATE,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+  FOREIGN KEY (vehiculo_id) REFERENCES vehiculos(id)
+);
+Insertar datos de ejemplo:
+Copiar
+INSERT INTO vehiculos (marca, modelo, anio, color, numero_serie, fecha_registro) VALUES
+  ('Toyota', 'Corolla', 2020, 'Blanco', 'ABC123', '2022-01-01'),
+  ('Honda', 'Civic', 2018, 'Gris', 'DEF456', '2021-05-15'),
+  ('Ford', 'Mustang', 2022, 'Rojo', 'GHI789', '2023-03-10');
+
+INSERT INTO usuarios (nombre, apellido, email, telefono, rol, fecha_registro) VALUES
+  ('Juan', 'Pérez', 'juan@example.com', '123456789', 'Administrador', '2021-02-20'),
+  ('María', 'Gómez', 'maria@example.com', '987654321', 'Usuario', '2022-06-01'),
+  ('Carlos', 'Sánchez', 'carlos@example.com', '456789123', 'Invitado', '2023-01-15');
+
+INSERT INTO reservas (usuario_id, vehiculo_id, fecha_inicio, fecha_fin) VALUES
+  (1, 1, '2023-04-01', '2023-04-05'),
+  (2, 2, '2023-06-10', '2023-06-15'),
+  (3, 3, '2023-08-20', '2023-08-25');
+
+Verificar la estructura de la base de datos: Puedes utilizar los siguientes comandos SQL para inspeccionar la estructura de la base de datos:
+
+SHOW DATABASES;
+SHOW TABLES;
+DESCRIBE vehiculos;
+DESCRIBE usuarios;
+DESCRIBE reservas;
+
+
+
+Entiendo que deseas ver los registros almacenados en la base de datos del sistema_vehicular que creamos anteriormente. Aquí te muestro cómo puedes consultar los datos de cada una de las tablas:
+
+Tabla de vehículos:
+
+SELECT * FROM vehiculos;
+Esto mostrará todos los registros de la tabla vehiculos, incluyendo los campos id, marca, modelo, anio, color, numero_serie y fecha_registro.
+
+Tabla de usuarios:
+
+SELECT * FROM usuarios;
+Esto mostrará todos los registros de la tabla usuarios, incluyendo los campos id, nombre, apellido, email, telefono, rol y fecha_registro.
+
+Tabla de reservas:
+
+SELECT * FROM reservas;
+Esto mostrará todos los registros de la tabla reservas, incluyendo los campos id, usuario_id, vehiculo_id, fecha_inicio y fecha_fin.
+
+Puedes modificar estas consultas SQL para filtrar o seleccionar solo los campos que necesites. Por ejemplo, si quieres ver solo los vehículos de color rojo, puedes hacer:
+
+
+SELECT * FROM vehiculos WHERE color = 'Rojo';
+
+
+
+
+Entendido, vamos a trabajar con Flask y Django para crear el backend de tu sistema vehicular. Aquí te presento algunos pasos básicos para empezar:
+
+Usando Flask:
+
+Instalar Flask: Asegúrate de tener Python instalado y luego instala Flask a través de pip:
+
+Copiar
+pip install flask
+Crear la aplicación Flask: Crea un archivo, por ejemplo app.py, y define la aplicación Flask:
+
+Copiar
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/vehicles', methods=['GET'])
+def get_vehicles():
+    # Lógica para obtener los vehículos de la base de datos
+    vehicles = [
+        {'id': 1, 'make': 'Toyota', 'model': 'Corolla'},
+        {'id': 2, 'make': 'Honda', 'model': 'Civic'},
+        {'id': 3, 'make': 'Ford', 'model': 'Mustang'}
+    ]
+    return jsonify(vehicles)
+
+if __name__ == '__main__':
+    app.run()
+Ejecutar la aplicación: Desde la terminal, ejecuta el archivo app.py para iniciar el servidor Flask:
+
+Copiar
+python app.py
+Ahora puedes acceder a la ruta /vehicles en tu navegador o herramienta de API para obtener los datos de los vehículos.
+
+Usando Django:
+
+Instalar Django: Asegúrate de tener Python instalado y luego instala Django a través de pip:
+
+Copiar
+pip install django
+Crear el proyecto Django: Desde la terminal, crea un nuevo proyecto Django:
+
+Copiar
+django-admin startproject vehiculos_api
+Crear la aplicación: Dentro del proyecto, crea una nueva aplicación:
+
+Copiar
+python manage.py startapp api
+Definir los modelos: En el archivo models.py de la aplicación api, define los modelos para los vehículos:
+
+Copiar
+from django.db import models
+
+class Vehicle(models.Model):
+    make = models.CharField(max_length=50)
+    model = models.CharField(max_length=50)
+Crear los endpoints API: En el archivo views.py de la aplicación api, define los endpoints API:
+
+Copiar
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Vehicle
+from .serializers import VehicleSerializer
+
+class VehicleListView(APIView):
+    def get(self, request):
+        vehicles = Vehicle.objects.all()
+        serializer = VehicleSerializer(vehicles, many=True)
+        return Response(serializer.data)
+Definir las rutas: En el archivo urls.py de la aplicación api, define las rutas para los endpoints:
+
+Copiar
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('vehicles/', views.VehicleListView.as_view()),
+]
+Registrar la aplicación: En el archivo settings.py del proyecto, agrega la aplicación api a la lista de aplicaciones instaladas:
+
+Copiar
+INSTALLED_APPS = [
+    # ...
+    'api',
+]
+Ejecutar el servidor Django: Desde la terminal, ejecuta el servidor Django:
+
+Copiar
+python manage.py runserver
+Ahora puedes acceder a la ruta /api/vehicles/ en tu navegador o herramienta de API para obtener los datos de los vehículos.
+
+Estos son los pasos básicos para comenzar a crear el backend de tu sistema vehicular utilizando Flask o Django. Ambos frameworks te permitirán interactuar con la base de datos y exponer los datos a través de endpoints API.
